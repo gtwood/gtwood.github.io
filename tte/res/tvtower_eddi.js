@@ -1,4 +1,4 @@
-
+Ôªø
 function btnsave(category){
 	if(category=='ads'){
 		var xmlText = new XMLSerializer().serializeToString(xml_db_ads);
@@ -280,12 +280,12 @@ function populate_list(category){
 		$('#box_'+category+' #db_entries').append(entry);
 	}
 	if(category=="ads"){
-		$('#box_ads p.entries_count').text(entries.length+' Eintr‰ge');
+		$('#box_ads p.entries_count').text(entries.length+' Eintr√§ge');
 		$('#box_ads #db_entries').show();
 		$('#create_new_ad_btn').show();
 		}
 	if(category=="news"){
-		$('#box_news p.entries_count').text(entries.length+' Eintr‰ge');
+		$('#box_news p.entries_count').text(entries.length+' Eintr√§ge');
 		$('#box_news #db_entries').show();
 		$('#create_new_news_btn').show();
 		
@@ -295,12 +295,12 @@ function populate_list(category){
 		
 		}
 	if(category=="people"){
-		$('#box_people p.entries_count').text(entries.length+' Eintr‰ge');
+		$('#box_people p.entries_count').text(entries.length+' Eintr√§ge');
 		$('#box_people #db_entries').show();
 		$('#create_new_person_btn').show();
 		}
 	if(category=="programme"){
-		$('#box_programme p.entries_count').text(entries.length+' Eintr‰ge');
+		$('#box_programme p.entries_count').text(entries.length+' Eintr√§ge');
 		$('#box_programme #db_entries').show();
 		$('#create_new_programme_btn').show();
 		}
