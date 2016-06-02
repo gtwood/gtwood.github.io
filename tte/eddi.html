@@ -1,0 +1,451 @@
+<html>
+<head>
+	<title>TV-Tower Eddi</title>
+	
+	<link rel="stylesheet" href="res/tvtower_eddi.css">
+	
+	<script type="text/javascript" src="res/FileSaver.js"></script>
+	<script type="text/javascript" src="res/jquery-2.2.4.js"></script>
+	<script type="text/javascript" src="res/formatXML.js"></script>	
+	
+	<script type="text/javascript" src="res/tvtower_eddi.js"></script>	
+		
+</head>
+
+
+<body>
+	<h1>TvTower - Eddi</h1>
+	<p>Bisher funktioniert dieser Editor nur mit der Datenbank für Werbung und News.</p>
+	
+	<table id="filemanagement">
+	<tr>
+	<th>Werbung</th>
+	<td><input id="ad_btnload" type="file" name="file" /></td>
+	<td><input id="ad_btnsave" style="display:none;" type="button" onclick="btnsave('ads')" value="Herunterladen"></td>
+	</tr>
+	<tr>
+	<th>Sendungen</th>
+	<td><input id="programme_btnload" type="file" name="file" /></td>
+	<td><input id="programme_btnsave" style="display:none;" type="button" onclick="btnsave('programme')" value="Herunterladen"></td>
+	</tr>
+	</tr>
+	<tr>
+	<th>News</th>
+	<td><input id="news_btnload" type="file" name="file" /></td>
+	<td><input id="news_btnsave" style="display:none;" type="button" onclick="btnsave('news')" value="Herunterladen"></td>
+	</tr>
+	<tr>
+	<th>Personen</th>
+	<td><input id="people_btnload" type="file" name="file" /></td>
+	<td><input id="people_btnsave" style="display:none;" type="button" onclick="btnsave('people')" value="Herunterladen"></td>
+	</tr>
+	</table>	
+	<br>
+	<p>Wenn das Laden erfolgreich war, erscheint hier unten eine Liste mit allen Einträgen. Man kann drauf klicken und bearbeiten. Anschließend die manipulierte Datei mit dem Knopf oben herunterladen.</p>
+	
+	<p>Was noch fehlt:</p>
+	<ul>
+		<li>Einträge entfernen</li>
+		<li>multiple Subelemente (Serienfolgen, Schauspieler)</li>
+		<li>unbedeutende Personen</li>
+		<li>Suche</li>
+		<li>Spezialfunktionen: Setze alle Werte auf 100. Oder +100, ...</li>
+		<li>Querverweise um zum Beispiel Personen einfach zu verknüpfen.</li>
+		<li>Überprüfung von Eingaben</li>
+	</ul>
+	<br>
+	<hr>
+	<br>
+	<div id="box_ads" class="category_box">
+	<h2>Werbung</h2>
+	<p class="entries_count">0 Einträge</p>
+		<div id="sample_entry" class="entry">
+			<span class="titlebar">Werbung - Beispiel</span>
+			<div class="collapsable">
+				<table>
+					<tr>
+						<td>Titel (DE)</td>
+						<td style="width:400px;">	
+							<input type="hidden" id="xmldocindex" name="xmldocindex" value="-1">
+							<input class="row" type="text" name="ad#title#de" value="">
+						</td>
+					</tr>
+					<tr>
+						<td>Titel (EN)</td>
+						<td><input class="row" type="text" name="ad#title#en" value=""></td>
+					</tr>
+					<tr>
+						<td>Beschreibung (DE)</td>
+						<td><textarea rows="4" name="ad#description#de"></textarea></td>
+					</tr>
+					<tr>
+						<td>Beschreibung (EN)</td>
+						<td><textarea rows="4" name="ad#description#en"></textarea></td>
+					</tr>
+					<tr>
+						<td>ID:</td>
+						<td><input type="text" class="row" name="ad.id" value=""></td>
+					</tr>
+					<tr>
+						<td>Autor-Name|Autor-ID:</td>
+						<td><input type="text" name="ad.created_by" value=""> <input type="text" name="ad.creator" value=""></td>
+					</tr>
+					<tr>
+						<td>Benötigte Zuschauer</td>
+						<td><input type="text" name="ad#conditions.min_audience" value="0"></td>
+					</tr>
+					<tr>
+						<td>Benötigtes Image</td>
+						<td><input type="text" name="ad#conditions.min_image" value="0"></td>
+					</tr>
+					<tr>
+						<td>Zielgruppe</td>
+						<td><input type="text" name="ad#conditions.target_group" value="0"></td>
+					</tr>
+					<tr>
+						<td>pro_pressure_groups</td>
+						<td><input type="text" name="ad#conditions.pro_pressure_groups" value="0"></td>
+					</tr>
+					<tr>
+						<td>contra_pressure_groups</td>
+						<td><input type="text" name="ad#conditions.contra_pressure_groups" value="0"></td>
+					</tr>
+					<tr>
+						<td>Anzahl Ausstrahlungen</td>
+						<td><input type="text" name="ad#data.repetitions" value="0"></td>
+					</tr>
+					<tr>
+						<td>Dauer</td>
+						<td><input type="text" name="ad#data.duration" value="0"></td>
+					</tr>
+					<tr>
+						<td>Ertrag</td>
+						<td><input type="text" name="ad#data.profit" value="0"></td>
+					</tr>
+					<tr>
+						<td>Strafe</td>
+						<td><input type="text" name="ad#data.penalty" value="0"></td>
+					</tr>
+					<tr>
+						<td>Fester Ertrag als Infomercial</td>
+						<td><input type="text" name="ad#data.fix_infomercial_profit" value="0">	</td>			
+					</tr>
+					<tr>
+						<td>Ertrag als Infomercial</td>
+						<td><input type="text" name="ad#data.infomercial_profit" value="0">	</td>			
+					</tr>
+					<tr>
+						<td>Ab Jahr</td>
+						<td><input type="text" name="ad#data.year_range_from" value="0"></td>
+					</tr>
+					<tr>
+						<td>Bis Jahr</td>
+						<td><input type="text" name="ad#data.year_range_to" value="0"></td>
+					</tr>
+				</table>	
+			</div>
+		</div>
+		
+		<div id="db_entries"></div>
+		<div><input id="create_new_ad_btn" style="display:none" type="button" onclick="create_new_ad()" value="neuen Werbespot einfügen"></div>
+	</div>
+	
+
+	<div id="box_news" class="category_box">
+	<h2>News</h2>
+	<p class="entries_count">0 Einträge</p>
+	<p>Darstellung optimieren für:	
+		<input type="radio" name="news_tabmode" value="1">Texte 
+		<input type="radio" name="news_tabmode" value="2">Newsketten 
+		<input type="radio" name="news_tabmode" value="3">Balancing 
+		<input type="radio" name="news_tabmode" value="4">Alles
+	</p>
+
+	<table id="db_entries">
+		<tr id="captions">
+			<td class="" >Titel (DE)</th>
+			<td class="filt filt1            " >Titel (EN)</th>
+			<td class="filt filt1 filt2      " >Beschreibung (DE)</th>			
+			<td class="filt filt1            " >Beschreibung (EN)</th>			
+			<td class="filt filt1 filt2      " >ID</th>	
+			<td class="filt filt1            " >created_by</th>				
+			<td class="filt filt1            " >creator</th>	
+			<td class="filt       filt2      " >ThreadID</th>
+			<td class="filt             filt3" >Type</th>
+			<td class="filt filt1       filt3" >Zielgr.</th>
+			<td class="filt       filt2      " >Eff.Trigger</th>
+			<td class="filt       filt2      " >Eff.Type</th>
+			<td class="filt       filt2      " >Eff.News</th>
+			<td class="filt filt1       filt3" >Genre</th>
+			<td class="filt             filt3" >Preis</th>
+			<td class="filt             filt3" >Qual.</th>
+			<td class="filt filt1       filt3" >Ab Jahr</th>
+			<td class="filt filt1       filt3" >Bis Jahr</th>			
+		</tr>
+		<tr id="sample_entry" class="entry">
+			<td class="">	
+				<input type="hidden" id="xmldocindex" name="xmldocindex" value="-1">
+				<input class="strl" type="text" name="news#title#de" value="">
+			</td>
+			<td class="filt filt1            " ><input class="strl" type="text" name="news#title#en" value=""></td>
+			<td class="filt filt1 filt2      " ><textarea class="strl" name="news#description#de"></textarea></td>
+			<td class="filt filt1            " ><textarea class="strl" name="news#description#en"></textarea></td>
+			<td class="filt filt1 filt2      " ><input class="strid" type="text" name="news.id" value=""></td>
+			<td class="filt filt1            " ><input class="strid" type="text" name="news.created_by" value=""></td>
+			<td class="filt filt1            " ><input class="strm" type="text" name="news.creator" value=""></td>
+			<td class="filt       filt2      " ><input class="strid" type="text" name="news.thread_id" value="0"></td>
+			<td class="filt             filt3" ><input class="ints" type="text" name="news.type" value="0"></td>
+			<td class="filt filt1       filt3" ><input class="ints" type="text" name="ad#conditions.target_group" value="0"></td>
+			<td class="filt       filt2      " ><input class="strs" type="text" name="news#effects#effect.trigger" value="0"></td>
+			<td class="filt       filt2      " ><input class="strs" type="text" name="news#effects#effect.type" value="0"></td>
+			<td class="filt       filt2      " ><input class="strid" type="text" name="news#effects#effect.news" value="0"></td>
+			<td class="filt filt1       filt3" ><input class="ints" type="text" name="news#data.genre" value="0"></td>
+			<td class="filt             filt3" ><input class="ints" type="text" name="news#data.price" value="0"></td>
+			<td class="filt             filt3" ><input class="ints" type="text" name="news#data.quality" value="0"></td>
+			<td class="filt filt1       filt3" ><input class="ints" type="text" name="news#conditions.year_range_from" value="-1"></td>
+			<td class="filt filt1       filt3" ><input class="ints" type="text" name="news#conditions.year_range_to" value="-1"></td>
+		</tr>
+	
+	</table>
+		<div><input id="create_new_news_btn" style="display:none" type="button" onclick="create_new_news()" value="neue News einfügen"></div>
+	</div>
+	
+	<div id="box_people" class="category_box">
+	<h2>Personen</h2>
+	<p class="entries_count">0 Einträge</p>
+		<div id="sample_entry" class="entry">
+			<span class="titlebar">Person - Beispiel</span>
+			<div class="collapsable">
+				<table>
+					<tr>
+						<td>Vorname</td>
+						<td style="width:400px;">	
+							<input type="hidden" id="xmldocindex" name="xmldocindex" value="-1">
+							<input class="row" type="text" name="person#first_name" value="">
+						</td>
+					</tr>
+					<tr>
+						<td>Nachname</td>
+						<td><input class="row" type="text" name="person#last_name" value=""></td>
+					</tr>
+					<tr>
+						<td>Spitzname</td>
+						<td><input class="row" type="text" name="person#nick_name" value=""></td>
+					</tr>
+					<tr>
+						<td>ID:</td>
+						<td><input type="text" class="row" name="person.id" value=""></td>
+					</tr>
+					<tr>
+						<td>Autor</td>
+						<td><input type="text" name="person.created_by" value=""> <input type="text" name="person.creator" value=""></td>
+					</tr>
+					<tr>
+						<td>IMDB ID</td>
+						<td><input type="text" name="person.imdb_id" value="0"></td>
+					</tr>
+					<tr>
+						<td>TMDB ID</td>
+						<td><input type="text" name="person.tmdb_id" value="0"></td>
+					</tr>
+					<tr>
+						<td>Beruf</td>
+						<td><input type="text" name="person#details.job" value="0"></td>
+					</tr>
+					<tr>
+						<td>Geschlecht</td>
+						<td><input type="text" name="person#details.gender" value="0"></td>
+					</tr>
+					<tr>
+						<td>Geburtstag</td>
+						<td><input type="text" name="person#details.birthday" value="0"></td>
+					</tr>
+					<tr>
+						<td>Todestag</td>
+						<td><input type="text" name="person#details.deathday" value="0"></td>
+					</tr>
+					<tr>
+						<td>Land</td>
+						<td><input type="text" name="person#details.country" value="0"></td>
+					</tr>
+					<tr>
+						<td>Auslöser news</td>
+						<td><input type="text" name="news#effects#effect.news" value="0"></td>
+					</tr>
+					<tr>
+						<td>prominence</td>
+						<td><input type="text" name="person#data.prominence" value="0"></td>
+					</tr>
+					<tr>
+						<td>fame</td>
+						<td><input type="text" name="person#data.fame" value="0"></td>
+					</tr>
+					<tr>
+						<td>scandalizing</td>
+						<td><input type="text" name="person#data.scandalizing" value="0"></td>
+					</tr>
+					<tr>
+						<td>price_mod</td>
+						<td><input type="text" name="person#data.price_mod" value="-1"></td>
+					</tr>
+					<tr>
+						<td>power</td>
+						<td><input type="text" name="person#data.power" value="-1"></td>
+					</tr>
+					<tr>
+						<td>humor</td>
+						<td><input type="text" name="person#data.humor" value="-1"></td>
+					</tr>
+					<tr>
+						<td>charisma</td>
+						<td><input type="text" name="person#data.charisma" value="-1"></td>
+					</tr>
+					<tr>
+						<td>appearance</td>
+						<td><input type="text" name="person#data.appearance" value="-1"></td>
+					</tr>
+					<tr>
+						<td>topgenre1</td>
+						<td><input type="text" name="person#data.topgenre1" value="-1"></td>
+					</tr>
+					<tr>
+						<td>topgenre2</td>
+						<td><input type="text" name="person#data.topgenre1" value="-1"></td>
+					</tr>
+				</table>	
+			</div>
+		</div>
+		
+		<div id="db_entries"></div>
+		<div><input id="create_new_person_btn" style="display:none" type="button" onclick="create_new_person()" value="neue Person einfügen"></div>
+	</div>
+	
+	
+	<div id="box_programme" class="category_box">
+	<h2>Sendungen</h2>
+	<p class="entries_count">0 Einträge</p>
+		<div id="sample_entry" class="entry">
+			<span class="titlebar">Sendung - Beispiel</span>
+			<div class="collapsable">
+				<table>
+					<tr>
+						<td>Titel (DE)</td>
+						<td style="width:400px;">	
+							<input type="hidden" id="xmldocindex" name="xmldocindex" value="-1">
+							<input class="row" type="text" name="programme#title#de" value="">
+						</td>
+					</tr>
+					<tr>
+						<td>Titel (EN)</td>
+						<td style="width:400px;">	
+							<input type="hidden" id="xmldocindex" name="xmldocindex" value="-1">
+							<input class="row" type="text" name="programme#title#en" value="">
+						</td>
+					</tr>
+					<tr>
+						<td>Beschreibung (DE)</td>
+						<td><textarea rows="4" name="programme#description#de"></textarea></td>
+					</tr>
+					<tr>
+						<td>Beschreibung (EN)</td>
+						<td><textarea rows="4" name="programme#description#en"></textarea></td>
+					</tr>
+					<tr>
+						<td>ID:</td>
+						<td><input type="text" class="row" name="programme.id" value=""></td>
+					</tr>
+					<tr>
+						<td>rt_id:</td>
+						<td><input type="text" class="row" name="programme.id" value=""></td>
+					</tr>
+					<tr>
+						<td>Autor:</td>
+						<td><input type="text" name="programme.creator" value=""></td>
+					</tr>
+					<tr>
+						<td>product</td>
+						<td><input type="text" name="programme.product" value=""></td>
+					</tr>
+					<tr>
+						<td>licence_type</td>
+						<td><input type="text" name="programme.licence_type" value=""></td>
+					</tr>
+					<tr>
+						<td>IMDB ID</td>
+						<td><input type="text" name="programme.imdb_id" value="0"></td>
+					</tr>
+					<tr>
+						<td>TMDB ID</td>
+						<td><input type="text" name="programme.tmdb_id" value="0"></td>
+					</tr>
+					<tr>
+						<td>target_groups</td>
+						<td><input type="text" name="programme#groups.target_groups" value="0"></td>
+					</tr>
+					<tr>
+						<td>pro_pressure_groups</td>
+						<td><input type="text" name="programme#groups.pro_pressure_groups" value="0"></td>
+					</tr>
+					<tr>
+						<td>contra_pressure_groups</td>
+						<td><input type="text" name="programme#groups.contra_pressure_groups" value="0"></td>
+					</tr>
+					<tr>
+						<td>Land</td>
+						<td><input type="text" name="programme#data.country" value="0"></td>
+					</tr>
+					<tr>
+						<td>Jahr</td>
+						<td><input type="text" name="programme#data.year" value="0"></td>
+					</tr>
+					<tr>
+						<td>distribution</td>
+						<td><input type="text" name="programme#data.distribution" value="0"></td>
+					</tr>
+					<tr>
+						<td>Genre</td>
+						<td><input type="text" name="programme#data.maingenre" value="0"></td>
+					</tr>
+					<tr>
+						<td>subgenre</td>
+						<td><input type="text" name="programme#data.subgenre" value="0"></td>
+					</tr>
+					<tr>
+						<td>flags</td>
+						<td><input type="text" name="programme#data.flags" value="0"></td>
+					</tr>
+					<tr>
+						<td>blocks</td>
+						<td><input type="text" name="programme#data.blocks" value="-1"></td>
+					</tr>
+					<tr>
+						<td>time</td>
+						<td><input type="text" name="programme#data.time" value="-1"></td>
+					</tr>
+					<tr>
+						<td>price_mod</td>
+						<td><input type="text" name="programme#data.price_mod" value="-1"></td>
+					</tr>
+					<tr>
+						<td>critics</td>
+						<td><input type="text" name="programme#ratings.critics" value="-1"></td>
+					</tr>
+					<tr>
+						<td>speed</td>
+						<td><input type="text" name="programme#ratings.speed" value="-1"></td>
+					</tr>
+					<tr>
+						<td>outcome</td>
+						<td><input type="text" name="programme#ratings.outcome" value="-1"></td>
+					</tr>
+				</table>	
+			</div>
+		</div>
+		
+		<div id="db_entries"></div>
+		<div><input id="create_new_programme_btn" style="display:none" type="button" onclick="create_new_programme()" value="neue Sendung einfügen"></div>
+	</div>
+</body>
+
+
+</html>
