@@ -4,12 +4,16 @@
 	<title>TV-Tower Eddi</title>
 	
 	<link rel="stylesheet" href="res/tvtower_eddi.css">
-	
+	<link rel="stylesheet" href="res/jqueryui/css/base/jquery-ui-1.9.2.custom.min.css">
+		
 	<script type="text/javascript" src="res/FileSaver.js"></script>
 	<script type="text/javascript" src="res/jquery-2.2.4.js"></script>
 	<script type="text/javascript" src="res/formatXML.js"></script>	
-	
+	<script type="text/javascript" src="res/tablesort.js"></script> 
+	<script type="text/javascript" src="res/tablesort.number.js"></script> 
 	<script type="text/javascript" src="res/tvtower_eddi.js"></script>	
+	<script type="text/javascript" src="res/jqueryui/js/jquery-ui-1.9.2.custom.min.js"></script>	
+
 		
 </head>
 
@@ -147,7 +151,7 @@
 			</div>
 		</div>
 		
-		<div id="db_entries"></div>
+		<div id="db_entries"><div id="db_entries_body"></div></div>
 		<div><input id="create_new_ad_btn" style="display:none" type="button" onclick="create_new_ad()" value="neuen Werbespot einfügen"></div>
 	</div>
 	
@@ -161,33 +165,36 @@
 		<input type="radio" name="news_tabmode" value="3">Balancing 
 		<input type="radio" name="news_tabmode" value="4">Alles
 	</p>
+	
+	<p>Die Tabelle kann durch Klick auf die Spaltenköpfe sortiert werden</p>
 
-	<table id="db_entries">
+	<table id="db_entries" class="tablesorter">
+	<thead>
 		<tr id="captions">
-			<td class="" >Titel (DE)</th>
-			<td class="filt filt1            " >Titel (EN)</th>
-			<td class="filt filt1 filt2      " >Beschreibung (DE)</th>			
-			<td class="filt filt1            " >Beschreibung (EN)</th>			
-			<td class="filt filt1 filt2      " >ID</th>	
-			<td class="filt filt1            " >created_by</th>				
-			<td class="filt filt1            " >creator</th>	
-			<td class="filt       filt2      " >ThreadID</th>
-			<td class="filt             filt3" >Type</th>
-			<td class="filt filt1       filt3" >Zielgr.</th>
-			<td class="filt       filt2      " >Eff.Trigger</th>
-			<td class="filt       filt2      " >Eff.Type</th>
-			<td class="filt       filt2      " >Eff.News</th>
-			<td class="filt filt1       filt3" >Genre</th>
-			<td class="filt             filt3" >Preis</th>
-			<td class="filt             filt3" >Qual.</th>
-			<td class="filt filt1       filt3" >Ab Jahr</th>
-			<td class="filt filt1       filt3" >Bis Jahr</th>			
+			<th style="display:none;"></th>
+			<th class="" >Titel (DE)</th>
+			<th class="filt filt1            " >Titel (EN)</th>
+			<th class="filt filt1 filt2      " >Beschreibung (DE)</th>			
+			<th class="filt filt1            " >Beschreibung (EN)</th>			
+			<th class="filt filt1 filt2      " >ID</th>	
+			<th class="filt filt1            " >created_by</th>				
+			<th class="filt filt1            " >creator</th>	
+			<th class="filt       filt2      " >ThreadID</th>
+			<th class="filt             filt3" >Type</th>
+			<th class="filt       filt2      " >Eff.News</th>
+			<th class="filt                  " >Eff.Trigger</th>
+			<th class="filt                  " >Eff.Type</th>
+			<th class="filt filt1       filt3" >Genre</th>
+			<th class="filt             filt3" data-sort-method='number'>Preis</th>
+			<th class="filt             filt3" data-sort-method='number'>Qual.</th>
+			<th class="filt filt1       filt3" data-sort-method='number'>Ab Jahr</th>
+			<th class="filt filt1       filt3" data-sort-method='number'>Bis Jahr</th>			
 		</tr>
+	</thead>
+		<tbody id="db_entries_body">
 		<tr id="sample_entry" class="entry">
-			<td class="">	
-				<input type="hidden" id="xmldocindex" name="xmldocindex" value="-1">
-				<input class="strl" type="text" name="news#title#de" value="">
-			</td>
+			<td style="display:none;><input type="hidden" id="xmldocindex" name="xmldocindex" value="-1"></td>
+			<td>								<input class="strl" type="text" name="news#title#de" value=""></td>
 			<td class="filt filt1            " ><input class="strl" type="text" name="news#title#en" value=""></td>
 			<td class="filt filt1 filt2      " ><textarea class="strl" name="news#description#de"></textarea></td>
 			<td class="filt filt1            " ><textarea class="strl" name="news#description#en"></textarea></td>
@@ -196,19 +203,50 @@
 			<td class="filt filt1            " ><input class="strm" type="text" name="news.creator" value=""></td>
 			<td class="filt       filt2      " ><input class="strid" type="text" name="news.thread_id" value="0"></td>
 			<td class="filt             filt3" ><input class="ints" type="text" name="news.type" value="0"></td>
-			<td class="filt filt1       filt3" ><input class="ints" type="text" name="ad#conditions.target_group" value="0"></td>
-			<td class="filt       filt2      " ><input class="strs" type="text" name="news#effects#effect.trigger" value="0"></td>
-			<td class="filt       filt2      " ><input class="strs" type="text" name="news#effects#effect.type" value="0"></td>
-			<td class="filt       filt2      " ><input class="strid" type="text" name="news#effects#effect.news" value="0"></td>
+			<td class="filt       filt2      " ><input class="strid" type="text" name="news#effects#effect.news" value="0"><br><input type="button" value="Editor" onclick="openNewsThreadEditor(this);"></td>
+			<td class="filt                  " ><input class="strs" type="text" name="news#effects#effect.trigger" value="0"></td>
+			<td class="filt                  " ><input class="strs" type="text" name="news#effects#effect.type" value="0"></td>
 			<td class="filt filt1       filt3" ><input class="ints" type="text" name="news#data.genre" value="0"></td>
 			<td class="filt             filt3" ><input class="ints" type="text" name="news#data.price" value="0"></td>
 			<td class="filt             filt3" ><input class="ints" type="text" name="news#data.quality" value="0"></td>
 			<td class="filt filt1       filt3" ><input class="ints" type="text" name="news#conditions.year_range_from" value="-1"></td>
 			<td class="filt filt1       filt3" ><input class="ints" type="text" name="news#conditions.year_range_to" value="-1"></td>
 		</tr>
-	
+
+		</tbody>
 	</table>
 		<div><input id="create_new_news_btn" style="display:none" type="button" onclick="create_new_news()" value="neue News einfügen"></div>
+		
+		
+		<div id="threadeditor" title="Newskette zuweisen">
+			<div>
+			<input type="hidden" id="newsthreadeditor_xmlid" value="0">
+				<table>
+					<tr>
+						<td>ID</td>
+						<td id="newsthreadeditor_id"></td>
+					</tr>
+					<tr>
+						<td>Titel</td>
+						<td id="newsthreadeditor_titel"></td>
+					</tr>
+					<tr>
+						<td>Newskette</td>
+						<td><input class="strid" id="newsthreadeditor_ketteid" type="text" name="news.thread_id" value="0"></td>
+					</tr>
+					<tr>
+						<td>Trigger</td>
+						<td id="newsthreadeditor_triggerlist"></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><input type="button" value="Änderungen übernehmen" onclick="NewsThreadEditorApply()"></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		
+		
 	</div>
 	
 	<div id="box_people" class="category_box">
@@ -317,7 +355,7 @@
 			</div>
 		</div>
 		
-		<div id="db_entries"></div>
+		<div id="db_entries"><div id="db_entries_body"></div></div>
 		<div><input id="create_new_person_btn" style="display:none" type="button" onclick="create_new_person()" value="neue Person einfügen"></div>
 	</div>
 	
@@ -443,7 +481,7 @@
 			</div>
 		</div>
 		
-		<div id="db_entries"></div>
+		<div id="db_entries"><div id="db_entries_body"></div></div>
 		<div><input id="create_new_programme_btn" style="display:none" type="button" onclick="create_new_programme()" value="neue Sendung einfügen"></div>
 	</div>
 	
@@ -454,6 +492,10 @@
 			<li><a href="http://www.gamezworld.de/phpforum/viewtopic.php?pid=83239#p83239">Diskussion zum Editor</a></li>
 		</ul>
 	</div>
+	
+
+
+
 </body>
 
 

@@ -188,7 +188,7 @@ function setElementByIdAndPath(inputval, xmlid, path, xml_root){
 		var root_elems=xml_root.getElementsByTagName("ad");
 		}
 	if(nodelist[0]=="news"){
-		var root_elems=xml_root.getElementsByTagName("news");
+		var root_elems=xml_root.getElementsByTagName("news");		
 		}
 	if(nodelist[0]=="person"){
 		var root_elems=xml_root.getElementsByTagName("person");
@@ -270,6 +270,7 @@ function populate_list(category){
 				}
 			if (input.length>0){
 				$(input).val(val);
+				$(input).parents('td').attr('data-sort',val);
 				}
 		}
 		$(entry).find('.titlebar').text($(entry).find('input[name="'+title_path+'"]').val());	
@@ -277,7 +278,7 @@ function populate_list(category){
 		if(category=="people"){
 				$(entry).find('.titlebar').text($(entry).find('input[name="'+title_path+'"]').val()+", "+$(entry).find('input[name="person#first_name"]').val());	
 		}		
-		$('#box_'+category+' #db_entries').append(entry);
+		$('#box_'+category+' #db_entries_body').append(entry);
 	}
 	if(category=="ads"){
 		$('#box_ads p.entries_count').text(entries.length+' Einträge');
@@ -292,6 +293,12 @@ function populate_list(category){
 		$('#box_news .entry td.filt').hide();
 		$('#box_news .entry td.filt1').show();
 		$('input[name="news_tabmode"]').filter('[value="1"]').click();
+		
+		var o=$("#box_news #db_entries");
+		new Tablesort(o[0], {
+  descending: true
+});
+		
 		
 		}
 	if(category=="people"){
@@ -347,11 +354,12 @@ function manipulate_ad(inputval,inputname,xmldocindex){
 	}
 }
 
-function manipulate_news(inputval,inputname,xmldocindex){
+function manipulate_news(inputval,inputname,xmldocindex,elem){
 	setElementByIdAndPath(inputval,xmldocindex,inputname,xml_db_news);
 	if(inputname=="news#title#de"){
 		$('input#xmldocindex[value="'+xmldocindex+'"]').parents('.entry').find('.titlebar').text(inputval);
 	}
+	$(elem).parents('td').attr('data-sort',inputval);
 }
 
 function manipulate_person(inputval,inputname,xmldocindex){
@@ -417,6 +425,79 @@ function create_new_person(){
 	$('#box_people .entry').last().find('.collapsable').show();
 }
 
+function NewsThreadEditorApply(){
+	var editor=$( "#threadeditor" );
+	var kette=$( "#threadeditor" ).find('#newsthreadeditor_ketteid').val();
+	var xmlid=$(editor).find('#newsthreadeditor_id').val();
+	var triggerlink=$("input[name=\"news_threadselector\"]:checked").val();
+	
+	if(triggerlink==""){
+		var trigger="";
+		var triggertype="";
+	}else{
+		var trigger="happen";
+		var triggertype="triggernews";
+		}
+		
+	var row=$( "#threadeditor" )[0].affectedrow;
+	$(row).find("input[name='news.thread_id']").val(kette).change();
+	$(row).find("input[name='news#effects#effect.news']").val(triggerlink).change();
+	$(row).find("input[name='news#effects#effect.trigger']").val(trigger).change();
+	$(row).find("input[name='news#effects#effect.type']").val(triggertype).change();
+	
+	console.log(row);
+		
+	$(editor).dialog('close');
+}
+
+function openNewsThreadEditor(elem){
+	var par=$(elem).parents('.entry');
+	var xmlid=$(par).find("input[name='xmldocindex']").val();
+	var newsid=$(par).find("input[name='news.id']").val();
+	var newstitle=$(par).find("input[name='news#title#de']").val();
+	var newskette=$(par).find("input[name='news.thread_id']").val();
+	var selected=$(par).find("input[name='news#effects#effect.news']").val();
+	$( "#threadeditor" ).find('#newsthreadeditor_id').text(newsid);
+	$( "#threadeditor" ).find('#newsthreadeditor_titel').text(newstitle);
+	$( "#threadeditor" ).find('#newsthreadeditor_ketteid').val(newskette);
+	$( "#threadeditor" ).find('#newsthreadeditor_triggerlist').empty();
+	$( "#threadeditor" ).find('#newsthreadeditor_xmlid').val(xmlid);
+	
+	$( "#threadeditor" )[0].affectedrow=par;
+	
+	var ul = $('<ul></ul>');
+	var checked="";
+	if(selected==""){
+		checked="checked";
+		}
+	$(ul).append("<li><input "+checked+" type='radio' name=\"news_threadselector\" value=\"\">nichts</li>");
+	$('#box_news #db_entries_body .entry').each(function(){
+		var tid=$(this).find("input[name='news.thread_id']").val();
+		console.log(tid);
+		if(tid==newskette){
+			var nid=$(this).find("input[name='news.id']").val();
+			var ntit=$(this).find("input[name='news#title#de']").val();
+			if(nid!=newsid){
+					var checked="";
+					if(selected==nid){
+						checked="checked";
+						}
+			
+				$(ul).append("<li><input "+checked+" type='radio' value=\""+nid+"\" name=\"news_threadselector\">"+ntit+"</input></li>");
+				}
+			}
+	});
+	
+	$( "#threadeditor" ).find('#newsthreadeditor_triggerlist').append(ul);
+	
+	dialog = $( "#threadeditor" ).dialog({
+		  autoOpen: true,
+		  height: 500,
+		  width: 500,
+		  modal: true,
+		});
+}
+
 function create_new_programme(){
 	var ads=xml_db_programme.getElementsByTagName("allprogrammes");
 	ads=ads[0];
@@ -445,10 +526,13 @@ $(document).ready(function(){
 	$(document).on('change','input[name="news_tabmode"]',function(){
 		var v=$(this).val();
 		if(v<4){
+			$('#box_news th.filt').hide();
 			$('#box_news td.filt').hide();
 			$('#box_news td.filt'+v).show();
+			$('#box_news th.filt'+v).show();
 		}else{
 			$('#box_news td.filt').show();
+			$('#box_news th.filt').show();
 		}
 		});
 	
@@ -459,7 +543,7 @@ $(document).ready(function(){
 			manipulate_ad($(this).val(),$(this).prop('name'), xmldocindex);		
 		}
 		if(par_id=="box_news"){
-			manipulate_news($(this).val(),$(this).prop('name'), xmldocindex)		
+			manipulate_news($(this).val(),$(this).prop('name'), xmldocindex, this)		
 		}
 		if(par_id=="box_people"){
 			manipulate_person($(this).val(),$(this).prop('name'), xmldocindex)		
@@ -468,6 +552,10 @@ $(document).ready(function(){
 			manipulate_programme($(this).val(),$(this).prop('name'), xmldocindex)		
 		}
 	});
+	
+	
+	
+
 	
 
 });
