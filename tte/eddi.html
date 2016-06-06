@@ -20,8 +20,7 @@
 
 <body>
 	<h1>TvTower - Eddi</h1>
-	<p>Bisher funktioniert dieser Editor nur mit der Datenbank für Werbung und News.</p>
-	
+
 	<table id="filemanagement">
 	<tr>
 	<th>Werbung</th>
@@ -50,6 +49,7 @@
 	
 	<p>Was noch fehlt:</p>
 	<ul>
+		<li>Der Fokus der Entwicklung liegt gerade im Newseditor. Der Editor für die News ist deutlich weiter als der Editor für die anderen Bereiche.</li>
 		<li>Einträge entfernen</li>
 		<li>multiple Subelemente (Serienfolgen, Schauspieler)</li>
 		<li>unbedeutende Personen</li>
@@ -59,6 +59,10 @@
 		<li>Überprüfung von Eingaben</li>
 	</ul>
 	<br>
+	<hr>
+	<h2>Dein Name</h2>
+	<p>Trage hier Deinen Namen ein. Dieser wird beim Erzeugen von IDs als Vorspann eingesetzt.</p>
+	<input type="text" id="username" value="ed-gtwd">
 	<hr>
 	<br>
 	<div id="box_ads" class="category_box">
@@ -174,8 +178,7 @@
 			<th style="display:none;"></th>
 			<th class="" >Titel (DE)</th>
 			<th class="filt filt1            " >Titel (EN)</th>
-			<th class="filt filt1 filt2      " >Beschreibung (DE)</th>			
-			<th class="filt filt1            " >Beschreibung (EN)</th>			
+		
 			<th class="filt filt1 filt2      " >ID</th>	
 			<th class="filt filt1            " >created_by</th>				
 			<th class="filt filt1            " >creator</th>	
@@ -188,7 +191,9 @@
 			<th class="filt             filt3" data-sort-method='number'>Preis</th>
 			<th class="filt             filt3" data-sort-method='number'>Qual.</th>
 			<th class="filt filt1       filt3" data-sort-method='number'>Ab Jahr</th>
-			<th class="filt filt1       filt3" data-sort-method='number'>Bis Jahr</th>			
+			<th class="filt filt1       filt3" data-sort-method='number'>Bis Jahr</th>
+			<th class="filt filt1       filt3" >Beschreibung (DE)</th>			
+			<th class="filt filt1            " >Beschreibung (EN)</th>				
 		</tr>
 	</thead>
 		<tbody id="db_entries_body">
@@ -196,12 +201,10 @@
 			<td style="display:none;><input type="hidden" id="xmldocindex" name="xmldocindex" value="-1"></td>
 			<td>								<input class="strl" type="text" name="news#title#de" value=""></td>
 			<td class="filt filt1            " ><input class="strl" type="text" name="news#title#en" value=""></td>
-			<td class="filt filt1 filt2      " ><textarea class="strl" name="news#description#de"></textarea></td>
-			<td class="filt filt1            " ><textarea class="strl" name="news#description#en"></textarea></td>
-			<td class="filt filt1 filt2      " ><input class="strid" type="text" name="news.id" value=""></td>
+			<td class="filt filt1 filt2      " ><input class="strid" type="text" name="news.id" value=""><br><input type="button" value="Ändern" onclick="OpenNewsIdChanger(this)"></td>
 			<td class="filt filt1            " ><input class="strid" type="text" name="news.created_by" value=""></td>
 			<td class="filt filt1            " ><input class="strm" type="text" name="news.creator" value=""></td>
-			<td class="filt       filt2      " ><input class="strid" type="text" name="news.thread_id" value="0"></td>
+			<td class="filt       filt2      " ><input class="strid" type="text" name="news.thread_id" value="0"><br><input type="button" value="Ändern" onclick="OpenNewsThreadIdChanger(this)"></td>
 			<td class="filt             filt3" ><input class="ints" type="text" name="news.type" value="0"></td>
 			<td class="filt       filt2      " ><input class="strid" type="text" name="news#effects#effect.news" value="0"><br><input type="button" value="Editor" onclick="openNewsThreadEditor(this);"></td>
 			<td class="filt                  " ><input class="strs" type="text" name="news#effects#effect.trigger" value="0"></td>
@@ -211,6 +214,8 @@
 			<td class="filt             filt3" ><input class="ints" type="text" name="news#data.quality" value="0"></td>
 			<td class="filt filt1       filt3" ><input class="ints" type="text" name="news#conditions.year_range_from" value="-1"></td>
 			<td class="filt filt1       filt3" ><input class="ints" type="text" name="news#conditions.year_range_to" value="-1"></td>
+			<td class="filt filt1       filt3" ><textarea class="strl" name="news#description#de"></textarea></td>
+			<td class="filt filt1            " ><textarea class="strl" name="news#description#en"></textarea></td>
 		</tr>
 
 		</tbody>
@@ -246,6 +251,71 @@
 			</div>
 		</div>
 		
+		<div id="newsidchanger" title="ID der News ändern">
+			<div>
+			<input type="hidden" id="newsidchanger_xmlid" value="0">
+				<table>
+					<tr>
+						<td>Alte ID</td>
+						<td id="newsidchanger_id"></td>
+					</tr>
+					<tr>
+						<td>Kette ID</td>
+						<td id="newsidchanger_ketteid"></td>
+					</tr>
+					<tr>
+						<td>Titel</td>
+						<td id="newsidchanger_titel"></td>
+					</tr>
+					<tr>
+						<td>Neue ID</td>
+						<td><input class="strid" id="newsidchanger_newid" type="text" value="0">
+						<input type="button" value="Generieren" onclick="newsidchanger_generate()">
+						
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><input type="button" value="Änderungen übernehmen" onclick="NewsIdChangerApply()"></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><p>Beim Übernehmen wird die ID dieser Nachricht automatisch auch in den Verkettungen angepasst.</p></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		
+		<div id="newsthreadidchanger" title="ID der Newskette ändern">
+			<div>
+			<input type="hidden" id="newsthreadidchanger_xmlid" value="0">
+				<table>
+					<tr>
+						<td>Alte ID</td>
+						<td id="newsthreadidchanger_id"></td>
+					</tr>
+					<tr>
+						<td>Titel</td>
+						<td id="newsthreadidchanger_titel"></td>
+					</tr>
+					<tr>
+						<td>Neue ID</td>
+						<td><input class="strid" id="newsthreadidchanger_newid" type="text" value="0">
+						<input type="button" value="Generieren" onclick="newsthreadidchanger_generate()">
+						
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><input type="button" value="Änderungen übernehmen" onclick="NewsThreadIdChangerApply()"></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><p>Beim Übernehmen wird die ID dieser Nachricht automatisch auch in den Verkettungen angepasst.</p></td>
+					</tr>
+				</table>
+			</div>
+		</div>
 		
 	</div>
 	

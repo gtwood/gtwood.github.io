@@ -1,4 +1,18 @@
-﻿
+﻿String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
+};
+
+function makeStringToID(input){
+	var input = input.toLowerCase();
+	input=input.replaceAll('ä','ae');
+	input=input.replaceAll('ö','oe');
+	input=input.replaceAll('ü','ue');
+	input=input.replaceAll('ß','ss');
+	input=input.replace(/\W+/g, "-");	
+	return input.substr(0,24);	
+}
+
 function btnsave(category){
 	if(category=='ads'){
 		var xmlText = new XMLSerializer().serializeToString(xml_db_ads);
@@ -425,6 +439,101 @@ function create_new_person(){
 	$('#box_people .entry').last().find('.collapsable').show();
 }
 
+function newsidchanger_generate(){
+	var title=$( "#newsidchanger" ).find('#newsidchanger_ketteid').text();	
+	var newid=title+"-"+Math.round(Math.random()*1000);
+	$( "#newsidchanger" ).find('#newsidchanger_newid').val(newid);
+}
+function newsthreadidchanger_generate(){
+	var title=$( "#newsthreadidchanger" ).find('#newsthreadidchanger_titel').text();
+	var newid="news-"+$('#username').val()+'-'+makeStringToID(title);
+	$( "#newsthreadidchanger" ).find('#newsthreadidchanger_newid').val(newid);
+}
+
+
+function OpenNewsIdChanger(elem){
+	var par=$(elem).parents('.entry');
+	var xmlid=$(par).find("input[name='xmldocindex']").val();
+	var newsid=$(par).find("input[name='news.id']").val();
+	var newstitle=$(par).find("input[name='news#title#de']").val();
+	var newsketteid=$(par).find("input[name='news.thread_id']").val();
+	$( "#newsidchanger" ).find('#newsidchanger_id').text(newsid);
+	$( "#newsidchanger" ).find('#newsidchanger_titel').text(newstitle);
+	$( "#newsidchanger" ).find('#newsidchanger_newid').val(newsid);
+	$( "#newsidchanger" ).find('#newsidchanger_ketteid').text(newsketteid);
+	$( "#newsidchanger" )[0].affectedrow=par;
+	
+
+	
+	dialog = $( "#newsidchanger" ).dialog({
+		  autoOpen: true,
+		  height: 500,
+		  width: 500,
+		  modal: true,
+		});
+}
+
+function NewsIdChangerApply(){
+	var editor=$( "#newsidchanger" );
+	var newid=$(editor).find('#newsidchanger_newid').val();
+	var oldid=$(editor).find('#newsidchanger_id').text();	
+	var row=$( editor )[0].affectedrow;
+	$(row).find("input[name='news.id']").val(newid).change();
+	
+	$('#box_news #db_entries_body .entry').each(function(){
+		var telem=$(this).find("input[name='news#effects#effect.news']");
+		var telemvar=$(telem).val();
+		if (telemvar==oldid){
+			$(telem).val(newid).change();		
+		}
+	});
+	
+
+		
+	$(editor).dialog('close');
+}
+
+function OpenNewsThreadIdChanger(elem){
+	var par=$(elem).parents('.entry');
+	var xmlid=$(par).find("input[name='xmldocindex']").val();
+	var newsid=$(par).find("input[name='news.thread_id']").val();
+	var newstitle=$(par).find("input[name='news#title#de']").val();
+	$( "#newsthreadidchanger" ).find('#newsthreadidchanger_id').text(newsid);
+	$( "#newsthreadidchanger" ).find('#newsthreadidchanger_titel').text(newstitle);
+	$( "#newsthreadidchanger" ).find('#newsthreadidchanger_newid').val(newsid);
+	
+	$( "#newsthreadidchanger" )[0].affectedrow=par;
+	
+
+	
+	dialog = $( "#newsthreadidchanger" ).dialog({
+		  autoOpen: true,
+		  height: 500,
+		  width: 500,
+		  modal: true,
+		});
+}
+
+function NewsThreadIdChangerApply(){
+	var editor=$( "#newsthreadidchanger" );
+	var newid=$(editor).find('#newsthreadidchanger_newid').val();
+	var oldid=$(editor).find('#newsthreadidchanger_id').text();	
+	var row=$( editor )[0].affectedrow;
+	$(row).find("input[name='news.thread_id']").val(newid).change();
+	
+	$('#box_news #db_entries_body .entry').each(function(){
+		var telem=$(this).find("input[name='news.thread_id']");
+		var telemvar=$(telem).val();
+		if (telemvar==oldid){
+			$(telem).val(newid).change();		
+		}
+	});
+	
+
+		
+	$(editor).dialog('close');
+}
+
 function NewsThreadEditorApply(){
 	var editor=$( "#threadeditor" );
 	var kette=$( "#threadeditor" ).find('#newsthreadeditor_ketteid').val();
@@ -444,8 +553,6 @@ function NewsThreadEditorApply(){
 	$(row).find("input[name='news#effects#effect.news']").val(triggerlink).change();
 	$(row).find("input[name='news#effects#effect.trigger']").val(trigger).change();
 	$(row).find("input[name='news#effects#effect.type']").val(triggertype).change();
-	
-	console.log(row);
 		
 	$(editor).dialog('close');
 }
