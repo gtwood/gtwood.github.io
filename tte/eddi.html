@@ -187,6 +187,7 @@
 			<th class="filt       filt2      " >Eff.News</th>
 			<th class="filt                  " >Eff.Trigger</th>
 			<th class="filt                  " >Eff.Type</th>
+			<th class="filt       filt2 filt3" >Eff.Time</th>
 			<th class="filt filt1       filt3" >Genre</th>
 			<th class="filt             filt3" data-sort-method='number'>Preis</th>
 			<th class="filt             filt3" data-sort-method='number'>Qual.</th>
@@ -207,8 +208,9 @@
 			<td class="filt       filt2      " ><input class="strid" type="text" name="news.thread_id" value="0"><br><input type="button" value="Ändern" onclick="OpenNewsThreadIdChanger(this)"></td>
 			<td class="filt             filt3" ><input class="ints" type="text" name="news.type" value="0"></td>
 			<td class="filt       filt2      " ><input class="strid" type="text" name="news#effects#effect.news" value="0"><br><input type="button" value="Editor" onclick="openNewsThreadEditor(this);"></td>
-			<td class="filt                  " ><input class="strs" type="text" name="news#effects#effect.trigger" value="0"></td>
+			<td class="filt                  " ><input class="strs" type="text" name="news#effects#effect.trigger" value=""></td>
 			<td class="filt                  " ><input class="strs" type="text" name="news#effects#effect.type" value="0"></td>
+			<td class="filt       filt2 filt3" ><input class="strs" type="text" name="news#effects#effect.time" value="0"><br><input type="button" value="Editor" onclick="openNewsTimeEditor(this);"></td>
 			<td class="filt filt1       filt3" ><input class="ints" type="text" name="news#data.genre" value="0"></td>
 			<td class="filt             filt3" ><input class="ints" type="text" name="news#data.price" value="0"></td>
 			<td class="filt             filt3" ><input class="ints" type="text" name="news#data.quality" value="0"></td>
@@ -312,6 +314,44 @@
 					<tr>
 						<td></td>
 						<td><p>Beim Übernehmen wird die ID dieser Nachricht automatisch auch in den Verkettungen angepasst.</p></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		
+		<div id="newstimeditor" title="News Zeiteditor">
+			<div>
+				<table>
+					<tr>
+						<td>Modus</td>
+						<td>
+							<select id="newstime_a">
+								<option value="1">1</option>
+								<option value="2">2</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Einstellung</td>
+						<td>
+						<input type="text" class="ints" id="newstime_b"> bis 
+						<input type="text" class="ints" id="newstime_c"> 
+						<span id="newstime_modelbl_1">Stunden von jetzt</span>
+						<span id="newstime_modelbl_2">Tage von jetzt</span>
+						</td>
+					</tr>
+					<tr id="newstime_mode2">
+						<td></td>
+						<td>
+						um
+						<input type="text" class="ints" id="newstime_d">:00 Uhr
+						bis
+						<input type="text" class="ints" id="newstime_e">:00 Uhr
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><input type="button" value="Änderungen übernehmen" onclick="NewsTimeEditoprApply()"></td>
 					</tr>
 				</table>
 			</div>

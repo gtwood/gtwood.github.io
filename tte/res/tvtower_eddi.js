@@ -88,6 +88,7 @@ var news_paths=[
 				'news#effects#effect.trigger',
 				'news#effects#effect.type',
 				'news#effects#effect.news',
+				'news#effects#effect.time',
 				'news#data.genre',
 				'news#data.price',
 				'news#data.quality',
@@ -451,6 +452,66 @@ function newsthreadidchanger_generate(){
 }
 
 
+function openNewsTimeEditor(elem){
+	var par=$(elem).parents('.entry');
+	var timeconf=$(par).find("input[name='news#effects#effect.time']").val();
+	if(timeconf==undefined){
+		timeconf="1,0,0";
+	}
+	timeconf=timeconf.split(',');
+	while (timeconf.length<5){
+		timeconf.push(0);
+	}
+	if(timeconf.length>2){
+
+		$( "#newstimeditor" ).find('#newstime_a');
+		$($('#newstime_a').find('option')[0]).attr('selected','true')
+		$( "#newstimeditor" ).find('#newstime_b').text(timeconf[1]);
+		$( "#newstimeditor" ).find('#newstime_c').text(timeconf[2]);
+		$( "#newstimeditor" ).find('#newstime_d').text('');
+		$( "#newstimeditor" ).find('#newstime_e').text('');
+		$( "#newstimeditor" ).find('#newstime_modelbl_1').show();
+		$( "#newstimeditor" ).find('#newstime_modelbl_2').hide();
+		$( "#newstimeditor" ).find('#newstime_mode2').hide();
+		if(timeconf[0]==2){
+			$($('#newstime_a').find('option')[1]).attr('selected','true')
+			$( "#newstimeditor" ).find('#newstime_d').text(timeconf[3]);
+			$( "#newstimeditor" ).find('#newstime_e').text(timeconf[4]);
+			$( "#newstimeditor" ).find('#newstime_modelbl_1').hide();
+			$( "#newstimeditor" ).find('#newstime_modelbl_2').show();
+			$( "#newstimeditor" ).find('#newstime_mode2').show();
+			}
+		}	
+	
+	$( "#newstimeditor" )[0].affectedrow=par;
+	
+	dialog = $( "#newstimeditor" ).dialog({
+		  autoOpen: true,
+		  height: 220,
+		  width: 500,
+		  modal: true,
+		});
+}
+
+function NewsTimeEditoprApply(){
+	var editor=$( "#newstimeditor" );
+	var a=$(editor).find('#newstime_a').val();
+	var b=$(editor).find('#newstime_b').val();
+	var c=$(editor).find('#newstime_c').val();
+	var d=$(editor).find('#newstime_d').val();
+	var e=$(editor).find('#newstime_e').val();
+	var arr=[a,b,c];
+	if(a==2){
+		var arr=[a,b,c,d,e];
+		}
+	var newid=arr.join(',');
+	
+	var row=$( editor )[0].affectedrow;
+	$(row).find("input[name='news#effects#effect.time']").val(newid).change();
+
+	$(editor).dialog('close');
+}
+
 function OpenNewsIdChanger(elem){
 	var par=$(elem).parents('.entry');
 	var xmlid=$(par).find("input[name='xmldocindex']").val();
@@ -473,6 +534,7 @@ function OpenNewsIdChanger(elem){
 		});
 }
 
+
 function NewsIdChangerApply(){
 	var editor=$( "#newsidchanger" );
 	var newid=$(editor).find('#newsidchanger_newid').val();
@@ -487,9 +549,7 @@ function NewsIdChangerApply(){
 			$(telem).val(newid).change();		
 		}
 	});
-	
 
-		
 	$(editor).dialog('close');
 }
 
@@ -641,6 +701,14 @@ $(document).ready(function(){
 			$('#box_news td.filt').show();
 			$('#box_news th.filt').show();
 		}
+		});
+	$(document).on('change','#newstime_a', function(){
+			var val=$(this).val();
+			if (val==2){
+				$('#newstime_mode2').show();
+			}else{
+				$('#newstime_mode2').hide();
+			}
 		});
 	
 	$(document).on('change','#db_entries .entry input,#db_entries .entry textarea',function(){
